@@ -17,6 +17,7 @@ suppressPackageStartupMessages(library(data.table))
 suppressPackageStartupMessages(library(tidyr))
 suppressPackageStartupMessages(library(lubridate))
 ##-----------------------------
+source("get_plans.R")
 
 get.edit.inv <- function(url){
     ## Obtiene la informacion de la ultima modificacion al inventario de datos
@@ -174,6 +175,7 @@ conjuntos     <- nrow(data_table)
 print(paste0( "Conjuntos: ",conjuntos ))
 recursos      <- data_table[,sum(Recursos)]
 print(paste0( "Recursos: ", recursos ))
+print("###################################################")
 #####
 data_table    <- filter(data_table, Inst != "null")
 top_conjuntos <- data_table[,.N, by = Inst]
@@ -188,3 +190,6 @@ top_recursos <- top_recursos[order(top_recursos$V1,
                             ]
 print("10 instituciones con más recursos")
 print(head(top_recursos,10))
+print("###################################################")
+all_plans <- filter(all_plans, dep != "adela-mxabierto")
+print(paste0("Planse de apertura: ", length(unique(all_plans$dep))))
