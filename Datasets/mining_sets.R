@@ -173,6 +173,7 @@ write.csv(data,
 data$Recursos <- extract_numeric(data$Recursos)
 data_table    <- data.table(data)
 conjuntos     <- nrow(data_table)
+print("###################################################")
 print(paste0( "Conjuntos: ",conjuntos ))
 recursos      <- data_table[,sum(Recursos)]
 print(paste0( "Recursos: ", recursos ))
@@ -183,6 +184,7 @@ top_conjuntos <- data_table[,.N, by = Inst]
 top_conjuntos <- top_conjuntos[order(top_conjuntos$N,
                                     decreasing = TRUE),
                               ]
+print("###################################################")
 print("10 instituciones con más conjuntos")
 print(head(top_conjuntos,10))
 top_recursos <- data_table[,sum(Recursos), by = Inst]
@@ -273,7 +275,7 @@ ggplot(data = rec_set_data,
         axis.title = element_blank(),
         axis.text.y = element_text(color = "#78A300"),
         axis.text.x = element_text(color = "#9E9E9E"),
-        legend.position = c(.55, .85),
+        legend.position = "none",#c(.55, .85),
         legend.background = element_rect(colour = "#9E9E9E")
     ) +
     scale_colour_manual(labels = c("Conjuntos", "Recursos"),
@@ -298,7 +300,7 @@ ggplot(data = cum_rec_set,
         axis.title = element_blank(),
         axis.text.y = element_text(color = "#78A300"),
         axis.text.x = element_text(color = "#9E9E9E"),
-        legend.position = c(.55, .85),
+        legend.position = "none",#c(.55, .85),
         legend.background = element_rect(colour = "#9E9E9E")
     ) +
     scale_colour_manual(labels = c("Conjuntos", "Recursos"),
