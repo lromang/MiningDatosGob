@@ -5,6 +5,7 @@
 ## http://busca.datos.gob.mx/#/conjuntos
 ##-----------------------------
 ## Librerias utilizadas
+suppressPackageStartupMessages(library(ggplot2))
 suppressPackageStartupMessages(library(XML))
 suppressPackageStartupMessages(library(stringr))
 suppressPackageStartupMessages(library(RCurl))
@@ -193,3 +194,115 @@ print(head(top_recursos,10))
 print("###################################################")
 all_plans <- filter(all_plans, dep != "adela-mxabierto")
 print(paste0("Planse de apertura: ", length(unique(all_plans$dep))))
+
+###
+## Time line
+###
+## Graphs!!!!
+######################################
+## Institutions
+######################################
+graph_data <- data.table(data[,c(1,2,3,5)])
+graph_data$fecha <- as.Date(graph_data$fecha)
+#####################################
+################base#################
+base_inst <- length(unique(graph_data[graph_data$fecha   <= '2015-07-15']$Inst))
+base_set  <- sum(plyr::count(graph_data[graph_data$fecha <= '2015-07-15']$Inst)$freq)
+base_rec  <- sum(graph_data[graph_data$fecha             <= '2015-07-15']$Recursos)
+#####################################
+#####################################
+graph_data <- dplyr::filter(graph_data, fecha > '2015-07-15')
+inst_data  <- graph_data[,min(fecha), by = "Inst"]
+inst_data_count <- inst_data[,.N, by = "V1"]
+## Graph
+png(paste0("../graphs/inst_",today(),".png"), width=1200)
+ggplot(data = inst_data_count,
+       aes(x = V1, y = N)) + geom_area(col  = "#78A300",
+                                       fill = "#78A300",
+                                       alpha = .08) +
+    theme(
+        panel.background = element_rect(fill = "white"),
+        panel.grid.minor = element_blank(),
+        panel.grid.major.x = element_blank(),
+        panel.grid.major.y = element_line(color = "#EEEEEE"),
+        axis.title = element_blank(),
+        axis.text.y = element_text(color = "#78A300"),
+        axis.text.x = element_text(color = "#9E9E9E"))
+dev.off()
+## Graph acumulada
+inst_data_count[1,]$N <- inst_data_count[1,]$N + base_inst
+png(paste0("../graphs/inst_cum_",today(),".png"), width=1200)
+ggplot(data = inst_data_count,
+       aes(x = sort(V1), y = cumsum(N))) + geom_area(col  = "#78A300",
+                                       fill = "#78A300",
+                                       alpha = .08) +
+    theme(
+        panel.background = element_rect(fill = "white"),
+        panel.grid.minor = element_blank(),
+        panel.grid.major.x = element_blank(),
+        panel.grid.major.y = element_line(color = "#EEEEEE"),
+        axis.title = element_blank(),
+        axis.text.y = element_text(color = "#78A300"),
+        axis.text.x = element_text(color = "#9E9E9E"))
+dev.off()
+######################################
+#### Recursos y Conjuntos
+######################################
+## Recursos
+rec_data <- graph_data[,sum(Recursos), by = fecha]
+rec_data$class <- "Recurso"
+
+## Conjuntos
+set_data <- graph_data[,min(fecha), by = Conjunto]
+set_data_count <- set_data[,.N, by = "V1"]
+set_data_count$class <- "Conjunto"
+names(set_data_count) <- c("fecha", "V1", "class")
+
+## All data
+rec_set_data <- rbind(rec_data, set_data_count)
+## Graph
+png(paste0("../graphs/set_rec_",today(),".png"), width=1200)
+ggplot(data = rec_set_data,
+       aes(x = fecha, y = V1, col = class, fill = class )) +
+    geom_area(alpha = .08) + facet_wrap(~class, scales = "free") +
+    theme(
+        panel.background = element_rect(fill = "white"),
+        panel.grid.minor = element_blank(),
+        panel.grid.major.x = element_blank(),
+        panel.grid.major.y = element_line(color = "#EEEEEE"),
+        axis.title = element_blank(),
+        axis.text.y = element_text(color = "#78A300"),
+        axis.text.x = element_text(color = "#9E9E9E"),
+        legend.position = c(.55, .85),
+        legend.background = element_rect(colour = "#9E9E9E")
+    ) +
+    scale_colour_manual(labels = c("Conjuntos", "Recursos"),
+                        values = c("#78A300","#03A9F4")) +
+    scale_fill_manual(labels = c("Conjuntos", "Recursos"),
+                      values = c("#78A300","#03A9F4"))
+dev.off()
+## Graph acumulada
+rec_data[1,]$V1 <- rec_data[1,]$V1 + base_rec
+set_data[1,]$V1 <- set_data[1,]$V1 + base_set
+rec_set_data <- rbind(rec_data, set_data_count)
+cum_rec_set <- rec_set_data[,list(sort(fecha), cumsum(V1)), by = class]
+png(paste0("../graphs/set_rec_cum_",today(),".png"), width=1000)
+ggplot(data = cum_rec_set,
+       aes(x = V1, y = V2, col = class, fill = class )) +
+    geom_area(alpha = .08) + facet_wrap(~class, scales = "free") +
+    theme(
+        panel.background = element_rect(fill = "white"),
+        panel.grid.minor = element_blank(),
+        panel.grid.major.x = element_blank(),
+        panel.grid.major.y = element_line(color = "#EEEEEE"),
+        axis.title = element_blank(),
+        axis.text.y = element_text(color = "#78A300"),
+        axis.text.x = element_text(color = "#9E9E9E"),
+        legend.position = c(.55, .85),
+        legend.background = element_rect(colour = "#9E9E9E")
+    ) +
+    scale_colour_manual(labels = c("Conjuntos", "Recursos"),
+                        values = c("#78A300","#03A9F4")) +
+    scale_fill_manual(labels = c("Conjuntos", "Recursos"),
+                      values = c("#78A300","#03A9F4"))
+dev.off()
