@@ -204,13 +204,14 @@ print(paste0("Planse de apertura: ", length(unique(all_plans$dep))))
 ######################################
 ## Institutions
 ######################################
-graph_data <- data.table(data[,c(1,2,3,5)])
+##data <- read.csv("info_datos_gob-2015-11-03.csv", stringsAsFactors = FALSE)
+graph_data       <- data.table(data[,c(1,2,3,5)])
 graph_data$fecha <- as.Date(graph_data$fecha)
 #####################################
 ################base#################
 base_inst <- length(unique(graph_data[graph_data$fecha   <= '2015-07-15']$Inst))
-base_set  <- sum(plyr::count(graph_data[graph_data$fecha <= '2015-07-15']$Inst)$freq)
-base_rec  <- sum(graph_data[graph_data$fecha             <= '2015-07-15']$Recursos)
+base_set  <- sum(plyr::count(graph_data[graph_data$fecha <= '2015-07-15']$Conjunto)$freq)
+base_rec  <- sum(extract_numeric(graph_data[graph_data$fecha             <= '2015-07-15']$Recursos))
 #####################################
 #####################################
 graph_data <- dplyr::filter(graph_data, fecha > '2015-07-15')
@@ -285,7 +286,7 @@ ggplot(data = rec_set_data,
 dev.off()
 ## Graph acumulada
 rec_data[1,]$V1 <- rec_data[1,]$V1 + base_rec
-set_data[1,]$V1 <- set_data[1,]$V1 + base_set
+set_data_count[1,]$V1 <- set_data_count[1,]$V1 + base_set
 rec_set_data <- rbind(rec_data, set_data_count)
 cum_rec_set <- rec_set_data[,list(sort(fecha), cumsum(V1)), by = class]
 png(paste0("../graphs/set_rec_cum_",today(),".png"), width=1000)
