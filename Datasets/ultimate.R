@@ -50,6 +50,7 @@ for(i in 1:length(results)){
             resource.url    <- laply(resources, function(t)t <- {if(!is.null(t$url)){t$url}else{NA}})
             resource.format <- laply(resources, function(t)t <- {if(!is.null(t$format)){t$format}else{NA}})
             resource.size   <- laply(resources, function(t)t <- {if(!is.null(t$size)){t$size}else{NA}})
+            resource.desc   <- laply(resources, function(t)t <- {if(!is.null(t$description)){t$description}else{NA}})
         }
         n <- length(resource.name)
         all_data <- rbind(all_data,
@@ -60,6 +61,7 @@ for(i in 1:length(results)){
                             conj_fecha_cre = rep(date_created, n),
                             conj_fecha_modif = rep(date_modif, n),
                             rec = resource.name,
+                            rec_des = resource.desc,
                             rec_fecha = resource.date,
                             rec_url = resource.url,
                             rec_format = resource.format,
@@ -80,6 +82,7 @@ for(i in 1:length(results)){
             resource.url    <- laply(resources, function(t)t <- {if(!is.null(t$url)){t$url}else{NA}})
             resource.format <- laply(resources, function(t)t <- {if(!is.null(t$format)){t$format}else{NA}})
             resource.size   <- laply(resources, function(t)t <- {if(!is.null(t$size)){t$size}else{NA}})
+            resource.desc   <- laply(resources, function(t)t <- {if(!is.null(t$description)){t$description}else{NA}})
         }
         n <- length(resource.name)
         all_data <- rbind(all_data,
@@ -90,6 +93,7 @@ for(i in 1:length(results)){
                             conj_fecha_cre = rep(date_created, n),
                             conj_fecha_modif = rep(date_modif, n),
                             rec = resource.name,
+                            rec_des = resource.desc,
                             rec_fecha = resource.date,
                             rec_url = resource.url,
                             rec_format = resource.format,
