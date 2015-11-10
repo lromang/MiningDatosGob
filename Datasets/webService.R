@@ -1,3 +1,5 @@
+#! /usr/bin/Rscript
+
 source("/home/luis/quickStats/MiningDatosGob/Datasets/ultimate.R")
 
 filter_data <- dplyr::select(all_data, one_of("dep", "slug", "conj","rec","rec_des","rec_url"))
