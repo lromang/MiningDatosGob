@@ -1,10 +1,11 @@
+#! /usr/bin/Rscript
+
 ##########################################
 ## Código para formar MAT
 ##########################################
 
 ##-----------------------------
 ## Librerias utilizadas
-#! /usr/bin/Rscript
 
 ##-----------------------------
 suppressPackageStartupMessages(library(ggplot2))
@@ -38,7 +39,12 @@ for(i in 1:length(results)){
         ## Slug
         slug <- set$organization$name
         ## Conjunto
-        conj <- set$title
+        conj    <- set$title
+        if(length(set$extras)>=3){
+            id_conj <- set$extras[[3]]["value"]
+        }else{
+            id_conj <- NA
+        }
         ## Fecha de creación y modificación
         date_created <- as.Date(set$metadata_created)
         date_modif   <- as.Date(set$metadata_modified)
@@ -58,14 +64,15 @@ for(i in 1:length(results)){
                             dep  = rep(dep,  n),
                             slug = rep(slug, n),
                             conj = rep(conj, n),
-                            conj_fecha_cre = rep(date_created, n),
+                            conj_fecha_cre   = rep(date_created, n),
                             conj_fecha_modif = rep(date_modif, n),
-                            rec = resource.name,
-                            rec_des = resource.desc,
-                            rec_fecha = resource.date,
-                            rec_url = resource.url,
+                            rec        = resource.name,
+                            rec_des    = resource.desc,
+                            rec_fecha  = resource.date,
+                            rec_url    = resource.url,
                             rec_format = resource.format,
-                            rec_tam  = resource.size
+                            rec_tam    = resource.size,
+                            id_conj    = id_conj
                         )
                         )
     }else{
@@ -86,18 +93,19 @@ for(i in 1:length(results)){
         }
         n <- length(resource.name)
         all_data <- rbind(all_data,
-                        data.frame(
-                            dep  = rep(dep,  n),
-                            slug = rep(slug, n),
-                            conj = rep(conj, n),
-                            conj_fecha_cre = rep(date_created, n),
-                            conj_fecha_modif = rep(date_modif, n),
-                            rec = resource.name,
-                            rec_des = resource.desc,
-                            rec_fecha = resource.date,
-                            rec_url = resource.url,
-                            rec_format = resource.format,
-                            rec_tam  = resource.size
+                         data.frame(
+                             slug = rep(slug, n),
+                             dep  = rep(dep,  n),
+                             conj = rep(conj, n),
+                             conj_fecha_cre   = rep(date_created, n),
+                             conj_fecha_modif = rep(date_modif, n),
+                             rec        = resource.name,
+                             rec_des    = resource.desc,
+                             rec_fecha  = resource.date,
+                             rec_url    = resource.url,
+                             rec_format = resource.format,
+                             rec_tam    = resource.size,
+                             id_conj    = id_conj
                         )
                         )
     }
