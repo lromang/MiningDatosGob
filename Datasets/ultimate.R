@@ -26,9 +26,14 @@ suppressPackageStartupMessages(library(RJSONIO))
 ## Obtención de datos
 ## (Esto puede tardar varios minutos)
 ##-----------------------------
-data <- RJSONIO::fromJSON(getURL("http://catalogo.datos.gob.mx/api/3/action/current_package_list_with_resources"))
+data <-
+    RJSONIO::fromJSON(
+        getURL("http://catalogo.datos.gob.mx/api/3/action/current_package_list_with_resources")
+    )
+
 ## Nos enfocamos en los resultados
 results <- data$result
+
 ## Cada entrada es un conjunto
 all_data <- c()
 for(i in 1:length(results)){
@@ -72,7 +77,7 @@ for(i in 1:length(results)){
                             rec_url    = resource.url,
                             rec_format = resource.format,
                             rec_tam    = resource.size,
-                            id_conj    = id_conj
+                            id_conj    = rep(id_conj,n)
                         )
                         )
     }else{
@@ -81,7 +86,7 @@ for(i in 1:length(results)){
         conj  <- set$name
         conj_fecha_cre   <- set$metadata_created
         conj_fecha_modif <- set$revision_timestamp
-                ## Recursos
+        ## Recursos
         resources    <- set$resources
         if(!is.null(resources)){
             resource.name   <- laply(resources, function(t)t <- {if(!is.null(t$name)){t$name}else{NA}})
@@ -105,7 +110,7 @@ for(i in 1:length(results)){
                              rec_url    = resource.url,
                              rec_format = resource.format,
                              rec_tam    = resource.size,
-                             id_conj    = id_conj
+                             id_conj    = rep(id_conj,n)
                         )
                         )
     }
