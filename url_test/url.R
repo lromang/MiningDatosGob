@@ -15,6 +15,8 @@ data <- read.csv("https://raw.githubusercontent.com/lromang/MiningDatosGob/maste
 
 urls <- data$rec_url
 
+
+
 writeLines(urls, "urls.txt")
 ###################################
 ### Verificacion de codigo
